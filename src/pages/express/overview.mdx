@@ -1,0 +1,34 @@
+# 概要
+
+## 呼び出し元システムシミュレーターを作る
+当分先になるとは思うけど、以下を実現する呼び出し元シミュレータを作る
+
+- データの受け渡し(FrontDirectの呼び出しと予約データ返却など)の実験をFrontDirect間で行いたい 〜 POST / Redirectの実験
+- FrontDirectを動かす際にこのシミュレータからパラメータを貰う
+- 予約データをどこかに保存しておき、その中から予約変更依頼をできる様にする
+
+### 何で作るか？
+- 呼び出し元システムは恐らく、Java / C# / PHP / Rails環境が多いと思うので、少なくともMVCシステムとする
+- 候補としてはRails / Nest + Handlebars.js / Fastify + Handlebars.js?
+
+### Memo
+とりあえずRailsとNestでざっくりと作り、挙動が同じならばNestを採用。異なるならRailsを採用するのもあり得る。採用したものはmonorepoのどこかに入れておきたい。(開発・修正はfrontdirectブランチで良いと思う)
+
+技術的にはFastiry + Handlebarsを試してみたいが、メンテを考えるとNestで作っておいた方が良いと思うので、RailsじゃなくてNode環境で行けるならNestが第一候補。
+と言うことを一旦記録しておいて、このスレッドについては当面忘れることにする。
+
+## 作業
+**fastifyの調査**
+- #2873 Fastifyお試し
+- #2878 Fastify + TypeScript
+- #2879 fastifyでHandlebarsを使う
+
+Handlebarsとの連携が上手くいかないので、ここで挫折。
+
+**expressの調査**
+fastifyで挫折したので、「#2881 express インデックス 」にて、改めてexpressで調査
+
+**frontcaallerの実装**
+呼び出しツールのプロジェクト名をfrontcallerとする。
+- 「#2893 frontcaller環境構築 〜 プロジェクト作成」
+- 「#2894 frontcaller環境構築 〜 アプリケーション雛形」

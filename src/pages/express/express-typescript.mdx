@@ -1,0 +1,167 @@
+# Express + TypeScript
+参考
+- [Express(Node.js)でTypeScript環境を構築するための完全ガイド](https://reffect.co.jp/node-js/express-typescript/)
+
+## プロジェクト作成
+#2882 で作成したプロジェクトを使うのではなく、新規に作る。
+```shell
+$ mkdir express-ts
+$ cd express-ts
+$ npm init -y
+$ npm i express
+```
+
+## TypeScript環境構築
+```shell
+# 必要なパッケージをインストール
+$ npm i -D typescript @types/node @types/express
+
+# tsconfig.json生成
+$ npx tsc --init
+```
+
+tsconfig.jsonの編集
+参考: [fastify tsconfig](https://github.com/fastify/tsconfig)
+```json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "newLine": "lf",
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "lib": [
+      "ESNext"
+    ]
+  }
+}
+```
+
+package.jsonの編集
+```json
+{
+  "scripts": {
+    "build": "tsc -p tsconfig.json",  // 追加
+    "start": "node dist/app", // 追加
+  },
+}
+```
+
+プログラム用srcディレクトリ作成
+```shell
+$ mkdir src
+```
+
+## サンプルプログラム
+src/routes/route.tsを作成し、以下を追加。
+```ts
+import express from 'express'
+import type { Request, Response } from 'express'
+
+const router = express.Router()
+
+router.get('/', async (req: Request, res: Response) => {
+  res.send('Hello World!')
+})
+
+router.get('/about', async (req, res) => {
+  res.send('This is About page.')
+})
+
+export default router
+```
+
+src/app.tsを作成し、以下を追加。
+```ts
+import express from 'express'
+import baseRouter from './routes/route'
+
+const app = express()
+
+app.use('/', baseRouter)
+
+const port = 3000
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`)
+})
+```
+
+起動
+```shell
+$ npm run build
+$ npm run start
+```
+
+## esbuildを使う
+
+開発用のビルドにesbuild-registerを使う。
+```shell
+$ npm i -D esbuild-register
+```
+
+package.json
+```json
+"dev": "node -r esbuild-register src/app.ts",
+```
+
+## eslint / prettier
+参考
+- [Backend with Fastify — Part 1 (Project setup with Typescript, Eslint, Husky, Prettier)](https://medium.com/codingmountain-blog/backend-with-fastify-part-1-project-setup-with-typescript-eslint-husky-prettier-4a96aeab3b4d)
+
+```shell
+$ npm i -D eslint-config-standard-with-typescript prettier eslint-config-prettier
+```
+
+.eslint.jsを作成し、以下を追加
+```js
+module.exports = {
+  extends: ['standard-with-typescript','prettier'],
+  parserOptions: {
+    project: "./tsconfig.json",
+  },
+  rules: {
+    '@typescript-eslint/consistent-type-assertions': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/naming-convention': 'off',
+  },
+};
+```
+
+.prettierrcを作成し、以下を追加
+```json
+{
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "avoid"
+}
+```
+
+## VSCodeデバッグ環境
+.vscode/launch.jsonを作成し、以下を追加。
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "express App",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+  ]
+}
+```

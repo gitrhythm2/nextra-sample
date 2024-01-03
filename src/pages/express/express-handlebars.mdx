@@ -1,0 +1,260 @@
+# Express + Handlebars
+
+参考
+- [Handlebars.js](https://handlebarsjs.com/)
+- [express-handlebars](https://github.com/express-handlebars/express-handlebars)
+- [express-handlebars(hbs)の使い方](https://zenn.dev/urinco/articles/f8e3548b1385c4)
+
+## 環境構築
+expressでHandlebarsを使うには、[hbs](https://github.com/pillarjs/hbs) や[express-handlebars](https://github.com/express-handlebars/express-handlebars)があるが、
+express-handlebarsの方がレイアウトファイルを使えるなど性能が良さそうなのでこちらを使うことにする。
+
+
+```shell
+$ npm i express-handlebars
+```
+
+viewsディレクトリを作る
+テンプレートファイルはviewsディレクトリに配置するのが一般的なようなので、それも作っておく。
+```shell
+$ mkdir src/views
+```
+
+expressにviewエンジンとしてexpress-handlersを使うことと、テンプレートの場所を教える。
+その際、テンプレートファイルの拡張子の変更もする。
+> デフォルトでは拡張子は.handlebarsなので、これを.hbsに変更
+```ts
+import { engine } from 'express-handlebars'
+app.engine('hbs', engine({ extname: '.hbs' }))
+app.set('view engine', 'hbs')
+app.set('views', './src/views')
+```
+
+静的アセットを置くpublicディレクトリを作成
+```shell
+$ mkdir public
+$ cd public
+$ mkdir css img js
+```
+
+そして、このpublicディレクトリもexpressに教えてあげる。
+```ts
+import { join } from 'path'
+
+app.use('/public', express.static(join(__dirname, "../public")))
+```
+
+ここまでで、app.tsは以下のようになった。
+```ts
+import { join } from 'path'
+import express from 'express'
+import { engine } from 'express-handlebars'
+import baseRouter from './routes/route'
+
+const app = express()
+
+app.engine('hbs', engine({ extname: '.hbs' }))
+app.set('view engine', 'hbs')
+app.set('views', './src/views')
+
+app.use('/public', express.static(join(__dirname, "../public")))
+app.use('/', baseRouter)
+
+const port = 3000
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`)
+})
+```
+
+## ページを作る
+## レイアウトファイル
+express-handlebarsはレイアウトファイルも作ることができ、デフォルトではlayouts/main.hbsを参照するっぽいので、
+最初にそれを作成する。
+
+>レイアウトファイルは使い分けたり、デフォルトの設定をカスタマイズすればmain.hbs以外のファイル名を指定できるっぽいけど、
+フロントの呼び出しツールでは多分使わないので、その辺りは追求しないでおく。
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Handlerbarsお試し</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    {{{body}}}
+  </body>
+</html>
+```
+
+そして各ページは\{\{\{body\}\}\}の部分のみ記述する。
+
+### トップページ
+`localhost:3000`にアクセスした際のページを作る。
+viewsディレクトリにindex.hbsファイルを作成し、以下を追加。
+```html
+<h1>Top page</h1>
+<p>トップページ</p>
+```
+
+route側でこのページをリターンする。
+routes/route.ts
+```ts
+router.get('/', async (req: Request, res: Response) => {
+  res.render('index')
+})
+```
+
+### Aboutページ
+views/about.hbsを作成し、以下を追加。
+```html
+<h1>Aboutページ</h1>
+```
+
+routes/route.ts
+```ts
+router.get('/about', async (req, res) => {
+  res.render('about')
+})
+```
+
+実行するとページが表示される。
+
+## データをテンプレートに渡す
+データをテンプレートに渡すにはrender関数を呼ぶ際に渡せば良い。
+以下のようなオブジェクトを渡す。
+```ts
+router.get('/', async (req: Request, res: Response) => {
+  const data = {
+    hoge: 'ほげ',
+    fuga: 'ふが',
+    chome: {
+      aaa: 'AAA',
+    }
+  }
+  res.render('index', data)
+})
+```
+
+テンプレート側では以下のようにして参照する。
+```html
+<h1>Top page</h1>
+<p>トップページ</p>
+<div>hoge: {{hoge}}</div>
+<div>fuga: {{fuga}}</div>
+<div>aaa: {{chome.aaa}}</div>
+```
+
+## 条件分岐
+**if文**
+[Handlebars #if](https://handlebarsjs.com/guide/builtin-helpers.html#if)を読むと、単純なbool値ならば以下のように書けるっぽい。
+```html
+{{#if author}}
+  <h1>{{firstName}} {{lastName}}</h1>
+{{/if}}
+```
+
+ただし、`author === 'hoge'`のような書き方をするとエラーになる。
+その場合は自分でカスタムヘルパーを追加する必要があるっぽい。
+上記のようなことをやるならば、
+```ts
+eq(value1, value2) {
+ return value1 === value2
+}
+```
+
+のようなものがあれば良いので、Handlebarsのルールに沿って書くことこんな感じ。
+```ts
+Handlebars.registerHelper('eq', function (value1, value2) {
+  return value1 === value2
+})
+```
+
+で、これをどこに置くか？というと、こんな感じになる。
+app.ts
+```ts
+import { create } from 'express-handlebars'
+
+const hbs = create({
+  helpers: {
+    eq: function (value1: string, value2: string) {
+      return value1 === value2
+    }
+  },
+  extname: '.hbs',
+})
+
+app.engine('.hbs', hbs.engine)
+```
+
+後は、helper関数群を別ファイルで定義するようにすれば良いかな？
+src/helpers.tsファイルを作り、以下を追加。
+```ts
+export const helpers = {
+  eq: function (value1: string, value2: string) {
+    return value1 === value2
+  }
+}
+```
+
+app.ts
+```ts
+import { helpers } from './helpers'
+
+const hbs = create({
+  helpers,
+  extname: '.hbs',
+})
+```
+
+試してみる。
+
+routes/router.ts
+```ts
+router.get('/', async (req: Request, res: Response) => {
+  const data = {
+    defaultColor: 'white',
+  }
+  res.render('index.hbs', data)
+})
+```
+
+views/index.hbs
+```html
+<h1>Top page</h1>
+<p>トップページ</p>
+{{#if (eq defaultColor 'white')}}
+  <div>白</div>
+{{else}}
+  <div>その他</div>
+{{/if}}
+```
+## ループ
+#eachを使い、\{\{this\}\}で参照する。
+route.ts
+```ts
+router.get('/', async (req: Request, res: Response) => {
+  const data = {
+    arr: ['hoge', 'fuga', 'chome']
+  }
+  res.render('index', data)
+})
+```
+
+index.hbs
+```html
+<ul>
+  {{#each arr}}
+    <li>{{this}}</li>
+  {{/each}}
+</ul>
+```
+
+多分、書いていくうちに色々出てくると思うけど、ここまでにしておく。
+
+参考
+- [ Javascriptテンプレートエンジン「Handlebars」のifで複雑な条件を書いてみたり](http://blog.livedoor.jp/progressproblem/archives/9618476.html)
+
+

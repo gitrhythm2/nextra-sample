@@ -1,0 +1,113 @@
+# Expressお試し
+参考
+- [Express](https://expressjs.com/ja/)
+- [Express application generator](https://expressjs.com/en/starter/generator.html)
+
+## プロジェクト作成
+```shell
+$ mkdir express
+$ cd express
+$ npm init -y
+$ npm i express
+```
+
+package.jsonの修正
+```json
+{
+	//...
+  "main": "app.js", // index.js => app.js
+  "type": "module",  // 追加
+  "scripts": {
+    "start": "node src/app", // 追加
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+	//...
+}
+```
+
+src/app.jsを作成し、以下を追加。
+
+```js
+import express from 'express'
+
+const app = express()
+const port = 3000
+
+app.get('/', async (req, res) => {
+  res.send('Hello World!')
+})
+
+app.get('/about', async (req, res) => {
+  res.send('This is About page.')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+起動確認
+```shell
+$ npm run start
+```
+
+## nodemonを入れる
+ファイルが変更されたら自動で再起動してくれるnodemonの環境を作る。
+```shell
+$ npm i -D nodemon
+```
+
+package.jsonの修正
+```json
+"scripts": {
+  "start": "node server",
+  "dev": "nodemon server",  // 追加
+  "test": "echo \"Error: no test specified\" && exit 1"
+},
+```
+
+`npm run dev`で起動。
+server.jsを適当に修正し、自動で再起動することを確認。
+
+## routerを別ファイルにする
+参考
+- [Express | Routing](https://expressjs.com/en/guide/routing.html#express-router)
+
+src/routers/router.jsを作成し、以下を追加。
+```js
+import express from 'express'
+
+const router = express.Router()
+
+router.get('/', async (req, res) => {
+  res.send('Hello World!')
+})
+
+router.get('/about', async (req, res) => {
+  res.send('This is About page.')
+})
+
+export default router
+```
+
+app.js
+```js
+import express from 'express'
+import baseRouter from './routes/router.js'
+
+const app = express()
+
+app.use('/', baseRouter)
+
+const port = 3000
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+## autoload
+fastifyの[fastify-autoload](https://github.com/fastify/fastify-autoload) に該当するものを探してみたけど、今の所[expressjs.routes.autoload](https://github.com/hortopan/expressjs.routes.autoload)しか見つけられていない。expressにはこの辺りで定番のものが無いのかな？
+
+今の所はautoloadは考えないことにする。
+もし定番がないのならば、自分で実装してみるのも良いかも知れない。
+
