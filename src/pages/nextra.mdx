@@ -22,13 +22,13 @@ $ npx create-next-app@latest --src-dir --ts --eslint -- import-alias "@/*"
 ```
 
 そして追加でnextraのパッケージをインストール。
-```shell
+```shell copy
 $ npm i nextra nextra-theme-docs
 ```
 
 ### 設定
 next.config.jsを以下に変更する。
-```js
+```js copy
 const withNextra = require('nextra')({
   theme: 'nextra-theme-docs',
   themeConfig: './theme.config.tsx'
@@ -38,7 +38,7 @@ module.exports = withNextra()
 ```
 
 ルート直下にtheme.config.tsxを作成し、以下を追加。
-```ts
+```ts copy
 import { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
@@ -59,7 +59,7 @@ Next.jsプロジェクトを作成すると通常のSPAなプロジェクトを�
 
 加えて、pages/apiも不要なので削除する。
 そして、style.globals.cssを以下に変更する。
-```css
+```css copy
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,7 +91,7 @@ pages/about.mdx
 表示の順番は文字列を昇順でソートしたものになっているので、[Page Configuration | Pages](https://nextra.site/docs/docs-theme/page-configuration#pages)を参考にこれらを設定で調整する。
 
 pages/\_meta.jsonファイルを作成し、以下を追加する。
-```json
+```json copy
 {
   "index": "ホーム",
   "contact": "コンタクト",
@@ -103,7 +103,7 @@ pages/\_meta.jsonファイルを作成し、以下を追加する。
 
 ヘッダー部左のタイトル`Nextra Sample`をクリックしてもインデックスページに遷移するので、ナビゲーションメニューの`ホーム`は非表示にしたい。そのためにはdisplayにhiddenを指定する。[Hidden Routes](https://nextra.site/docs/docs-theme/page-configuration#hidden-routes)
 
-```json
+```json copy
 {
   "index": {
     "display": "hidden"
@@ -127,7 +127,7 @@ src/pages
 ```
 
 そしてframeworksディレクトリにも`\_meta.json`を作る。
-```json
+```json copy
 {
   "react": "React",
   "---": {   # セパレータを入れる場合はこのようにする
@@ -155,7 +155,7 @@ src/pages
 ```
 
 \_meta.jsonにこれらのディレクトリ情報をオブジェクトとして追加する。
-```json
+```json copy
 {
   "index": {
     "display": "hidden"
@@ -223,7 +223,7 @@ Public / Privateはお好みで。
 #### 作成したプロジェクトにpush
 リポジトリを作成するとnextra-sampleプロジェクトのページに遷移する。
 pushしようとするプロジェクトは既にローカルに存在しているので、`### …or push an existing repository from the command line`の手順を実行する。
-```
+```shell copy
 git remote add origin https://github.com/gitrhythm2/nextra-sample.git
 git branch -M main
 git push -u origin main
