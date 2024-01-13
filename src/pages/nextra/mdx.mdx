@@ -1,0 +1,98 @@
+import { Notis } from '@/components/Notis'
+
+# MDXの記法
+
+## MDXとは
+参考
+- [MDX公式](https://mdxjs.com/)
+- [Markdown を拡張する MDX はドキュメント作成の新たな可能性？](https://zenn.dev/spring_raining/articles/3eb62ff93df1eb)
+- [GitHub Flavored Markdown Spec](https://github.github.com/gfm/)
+- [GitHub Docs | 基本的な書き方とフォーマットの構文](https://docs.github.com/ja/github/writing-on-github/basic-writing-and-formatting-syntax)
+
+MDXとは、Markdownを拡張してJSXを埋め込めるようにしたものです。(MDX = Markdown + JSX)
+
+Markdownの記法はGitHub Flavored Markdown(GFM)をベースにしているので(多分)、[GitHub Docs | 基本的な書き方とフォーマットの構文](https://docs.github.com/ja/github/writing-on-github/basic-writing-and-formatting-syntax)
+の記法はそのまま使えると思います。
+
+## MarkdownにReactコンポーネントを埋め込む
+MDXはMarkdown + JSXなので、Reactのコンポーネントを埋め込むことが出来ます。
+
+下の`Click Me`をクリックすると数字がカウントアップされます。
+
+import { useState } from 'react'
+export const Sample = () => {
+  const [count, setCount] = useState(0)
+  return (
+    <button className="border p-2 rounded-md" onClick={() => setCount(count + 1)}>
+      Click Me: {count}
+    </button>
+  )
+}
+
+<Sample />
+
+これは以下のコードをMDXに直接埋め込んでいるからです。
+<Notis type="caution">
+  コンポーネントのコードと`<Sample />`の間に空行が必要です。
+</Notis>
+
+```ts
+import { useState } from 'react'
+export const Sample = () => {
+  const [count, setCount] = useState(0)
+  return (
+    <button className="border p-2 rounded-md" onClick={() => setCount(count + 1)}>
+      Click Me: {count}
+    </button>
+  )
+}
+
+<Sample />
+```
+
+このようにReactのコンポーネントが使えるので、文章を書く際にMarkdownの記法をカスタマイズするのではなく、
+カスタムコンポーネントを作成し、それを使うことでGMFの記法を拡張することができます。
+
+## 色々な記法
+### コードブロック
+コードブロックは[nextra | Syntax Highlighting](https://nextra.site/docs/guide/syntax-highlighting)
+を参照ください。
+
+色々なSyntax Hightlightingを指定するとこんな感じになります。
+```
+```ts filename="page.tsx" showLineNumbers copy /useState/ {2, 4-5}
+import { useState } from 'react'
+export const Sample = () => {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Click Me: {count}
+    </button>
+  )
+}
+　```
+```
+
+```ts filename="page.tsx" showLineNumbers copy /useState/ {2, 4-5}
+import { useState } from 'react'
+export const Sample = () => {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Click Me: {count}
+    </button>
+  )
+}
+```
+
+### スタイルの指定
+通常のMarkdownではスタイルを指定する際、以下のような書き方が出来ます。
+```html
+<span style="color: red">赤文字</span>
+```
+これはMDXではエラーになります。理由は、MDXでは、この部分はJSXとして動作するからです。
+
+JSXでは(要はReactの書き方では)以下のように書きます。
+```jsx
+<span style={{ color: "red" }}>赤文字</span>
+```
