@@ -3,5 +3,7 @@
   "deploy-on-vercel": "Vercelにデプロイする",
   "mdx": "MDXの記法",
   "customize": "カスタマイズ",
-  "custom-components": "カスタムコンポーネント"
+  "custom-components": "カスタムコンポーネント",
+  "analytics": "Analyticsを試す",
+  "todos": "TODO"
 }

@@ -1,0 +1,43 @@
+import { Steps } from 'nextra/components'
+
+# Analyticsを試す
+
+参考
+- [Vercel Web Analytics](https://vercel.com/docs/analytics)
+- [Vercel Web Analytics Quickstart](https://vercel.com/docs/analytics/quickstart#)
+
+<Steps>
+### `@vercel/analytics`をプロジェクトに追加する
+```shell
+$ npm i @vercel/analytics
+```
+
+### Analyticsコンポーネントをアプリに追加する
+```tsx {2,9}
+import '@/styles/globals.css'
+import { Analytics } from '@vercel/analytics/react'
+import type { AppProps } from 'next/app'
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics />
+    </>
+  )
+}
+```
+
+### Analyticsを有効にする
+VercelのサイトでAnalyticsタブを開き、Nextボタンクリックで有効にする。
+![analytics画面](./assets/analytics.png)
+
+次の画面でEnableボタンをクリックして有効にする。有効にすると次の画面に遷移し、アプリがデプロイされるのを待っている状態になる。
+![analyticsの待ち画面](./assets/analytics-wait.png)
+
+### アプリをデプロイする
+GitHubにプロジェクトをpushしてデプロイする。
+
+デプロイすると、先の待ち状態のダイアログが消え、Analyticsの画面に遷移する。
+
+</Steps>
