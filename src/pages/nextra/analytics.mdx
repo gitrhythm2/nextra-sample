@@ -1,4 +1,5 @@
 import { Steps } from 'nextra/components'
+import { Notis } from '@/components/Notis'
 
 # Analyticsを試す
 
@@ -28,16 +29,22 @@ export default function App({ Component, pageProps }: AppProps) {
 }
 ```
 
+### アプリをデプロイする
+GitHubにプロジェクトをpushしてデプロイする。
+
+デプロイすると先の待ち状態のダイアログが消え、Start exploringボタンが表示されるのでクリックする。
+以上でAnalyticsが有効になる。
+
 ### Analyticsを有効にする
 VercelのサイトでAnalyticsタブを開き、Nextボタンクリックで有効にする。
 ![analytics画面](./assets/analytics.png)
 
-次の画面でEnableボタンをクリックして有効にする。有効にすると次の画面に遷移し、アプリがデプロイされるのを待っている状態になる。
-![analyticsの待ち画面](./assets/analytics-wait.png)
+次の画面でEnableボタンをクリックして有効にする。
+有効にするとAnalyticsページが表示される。
 
-### アプリをデプロイする
-GitHubにプロジェクトをpushしてデプロイする。
-
-デプロイすると、先の待ち状態のダイアログが消え、Analyticsの画面に遷移する。
-
+<Notis>
+デプロイする前にAnalyticsを有効にしようとすると、Nextボタンをクリックした後に下図のようなAwaiting状態になるので、
+デプロイ後にAnalyticsを有効にする方が、手順としてはスムーズだと思う。
+![awaiting画面](./assets/analytics-awaiting.png)
+</Notis>
 </Steps>
