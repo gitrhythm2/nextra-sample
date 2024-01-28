@@ -5,5 +5,6 @@
   "customize": "カスタマイズ",
   "custom-components": "カスタムコンポーネント",
   "analytics": "Analyticsを試す",
+  "cli": "CLIでの操作",
   "todos": "TODO"
 }
