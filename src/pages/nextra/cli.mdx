@@ -7,6 +7,7 @@ CLIを使って、Vercelにデプロイしたアプリケーションを操作�
 ## 準備
 ### インストール
 参考: [Vercel CLI Overview](https://vercel.com/docs/cli)
+
 まず、Vercel CLIをインストールする。
 ```shell
 np i -D vercel@latest
@@ -134,7 +135,29 @@ Auto-detected Project Settings (Next.js):
   .vercel/README.txtにも書いてあるが、このディレクトリはgitでは管理しないようにする。
 </Notis>
 
-#### Todo
-- [ ] デプロイの停止
-- [ ] デプロイの削除
-- その他必要な操作は何か？
+### その他の操作
+#### デプロイしている一覧表示(vercel list)
+デプロイされているものの一覧を表示する。
+```shell
+$ npx vercel list  # listはlsでもOK
+  Age     Deployment                      Status  Environment Duration Username
+  7d      https://deploy-xxxxx.vercel.app ● Ready Production  40s      user
+  7d      https://deploy-xxxxx.vercel.app ● Ready Production   1m      user
+```
+ここに表示されているものはVercelのダッシュボード上で確認できるものと同じだが、Deploymentに
+表示されているものがここに表示される。Domainsで示されているURLは出てこない。
+![Deployリスト](./assets/deploy-list.png)
+
+#### デプロイの停止(remove -save)
+参考: [Vercel CLI - remove](https://vercel.com/docs/cli/remove)
+
+`vercel list`で確認したURLを指定すると、そのURLのデプロイを停止する。
+```shell
+$ npx vercel remove [デプロイURL]  # removeはrmでもOK
+```
+
+#### プロジェクトの削除(remove)
+プロジェクト名を指定すると、プロジェクトそのものをvercelから削除する。
+```shell
+$ npx vercel remove [プロジェクト名] # removeはrmでもOK
+```
