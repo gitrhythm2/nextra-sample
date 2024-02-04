@@ -129,7 +129,13 @@ Auto-detected Project Settings (Next.js):
 ```
 
 以上でデプロイは完了。
-こちらはPreviewモードは無いっぽい。
+
+<Notis>
+  Productionモードでデプロイする場合は`--prod`オプションをつける。
+  - Previewモードでのデプロイ: `vercel`
+  - Productionモードでのデプロイ: `vercel --prod`
+</Notis>
+
 <Notis type="caution">
   どちらでデプロイしてもルートディレクトリに`.vercel`というディレクトリが作成される。
   .vercel/README.txtにも書いてあるが、このディレクトリはgitでは管理しないようにする。
