@@ -1,0 +1,35 @@
+## pnpm
+
+参考
+- [pnpm](https://pnpm.io/ja/)
+- [pnpmについて調べたのでメモ](https://zenn.dev/s_takashi/articles/7358a32b1a6d52)
+- [pnpm の特徴](https://zenn.dev/azukiazusa/articles/pnpm-feature)
+- [node_modulesの問題点とその歴史 npm, yarnとpnpm](https://zenn.dev/saggggo/articles/dbd739508ac212)
+- [Node.js 向けパッケージマネージャ兼ワークスペース管理ツール pnpm を箇条書きで解説](https://zenn.dev/luma/articles/4f763dc90fcaaa)
+- [pnpmについて調べたらパッケージマネージャの歴史に行き着いた](https://zenn.dev/zozotech/articles/93d2b98678138e)
+
+## 問い
+- ハードリンクとシンボリックリンクの違いを説明できるか？
+	- そして実際にコマンドを打って操作できるか？
+- プロジェクトのnode_modulesの中身を見てみる
+	- どれがシンボリックリンク？
+	- どれがハードリンク？
+
+## よく使うコマンド
+- [pnpm install or i](https://pnpm.io/ja/cli/install)  〜 --flozen-lockfile
+- [pnpm add pkg](https://pnpm.io/ja/cli/add)
+- [pnpm update](https://pnpm.io/ja/cli/update)
+- [pnpm remove](https://pnpm.io/ja/cli/remove)
+- [pnpm prune](https://pnpm.io/ja/cli/prune)
+
+- [pnpm outdated](https://pnpm.io/ja/cli/outdated) 〜 --longも使える
+- [pnpm list](https://pnpm.io/ja/cli/list)
+
+後で読む
+- [pnpm fetch](https://pnpm.io/ja/cli/fetch)
+
+## ディレクトリ探索
+プロジェクトのnode_modulesの中を見る。
+- 直下に格納されているパッケージはインストールしたパッケージで、これらはシンボリックリンク
+- .pnpmにはインストールしたパッケージが依存しているものが格納されており、これらはハードリンク
+- .modules.yaml#storeDirにストアの場所が示されている

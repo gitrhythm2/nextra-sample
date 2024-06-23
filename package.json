@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "d": "next dev --turbo",
+    "d": "next dev",
     "b": "next build",
     "ss": "next start",
     "lint": "next lint"
